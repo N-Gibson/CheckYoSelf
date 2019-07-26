@@ -1,38 +1,84 @@
 <!DOCTYPE html>
   <html>
     <head>
-
+      <link rel="stylesheet" href="normalize.css"/>
+      <link rel="stylesheet" href="styles.css"/>
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800&display=swap" rel="stylesheet">
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
     </head>
     <body>
       <header>
         <h1>Check <span>Yo'</span> Self</h1>
-        <div>
-         <img src="images/search.svg" alt=""/>
-         <input type="text"/>
+        <div class="header__div">
+         <img class="header__div-img" src="images/search.svg" alt=""/>
+         <input class="header__div-input" type="text"/>
         </div>
       </header>
       <aside>
-        <label for=""></label>
-        <input type="text">
-        <ul>
-          <li>
-            <img src="images/delete.svg"> 
+        <label for="title-input">Task Title</label>
+        <input id="title-input" class="aside__input-title" type="text">
+        <ul class="aside__ul">
+          <li class="aside__li">
+            <img class="aside__ul-img" src="images/delete.svg">
+            <p class="aside__ul-p">Idea One</p> 
           </li>
         </ul>
-        <label for=""></label>
-        <div>
-          <input type="text">
-          <img src="images/plus.svg">
+        <label for="task-item">Task Item</label>
+        <div class="aside__div-button-plus">
+          <input id="task-item" class="aside__div__input-item" type="text">
+          <img class="aside__div__img-plus" src="images/plus.svg">
         </div>
-        <button>Make Task List</button>
-        <button>Clear All</button>
-        <button>Filter By Urgency</button>
+        <button class="aside__button-list">Make Task List</button>
+        <button class="aside__button-clear">Clear All</button>
+        <div class="aside__div-line">
+          <button class="aside__button-filter">Filter By Urgency</button>
+        </div>
       </aside>
       <main>
-        <article>
-          <header>Task Title</header>
-          
+        <article class="card">
+          <header class="card__header">Task Title</header>
+          <div class="card__div">
+            <img class="card__checkbox-inactive" src='images/checkbox.svg'/>
+            <p class="card__p">Idea 1</p>
+          </div>
+          <div class="card__div">
+              <img class="card__checkbox-inactive" src='images/checkbox.svg'/>
+              <p class="card__p">Idea 1</p>
+            </div>
+          <footer class="card__footer">
+            <div class="footer__urgent-div">
+              <img class="card__urgent" src="images/urgent.svg" alt=""/>
+              <p class="card__urgent-text">URGENT</p>
+            </div>
+            <div class="footer__delete-div">
+              <img class="card__delete" src="images/delete.svg" alt=""/>
+              <p class="card__delete-text">DELETE</p>
+            </div>
+          </footer>
         </article>
+        <article class="card-urgent">
+            <header class="card__header-urgent">Task Title</header>
+            <div class="card__div">
+              <img class="card__checkbox-inactive" src='images/checkbox.svg'/>
+              <p class="card__p">Idea 1</p>
+            </div>
+            <div class="card__div">
+                <img class="card__checkbox-inactive" src='images/checkbox.svg'/>
+                <p class="card__p">Idea 1</p>
+              </div>
+            <footer class="card__footer-urgent">
+              <div class="footer__urgent-div">
+                <img class="card__urgent" src="images/urgent-active.svg" alt=""/>
+                <p class="card__urgent-text-urgent">URGENT</p>
+              </div>
+              <div class="footer__delete-div">
+                <img class="card__delete" src="images/delete.svg" alt=""/>
+                <p class="card__delete-text">DELETE</p>
+              </div>
+            </footer>
+          </article>
       </main>
     </body>
+    <script src="todo-list.js"></script>
+    <script src="main.js"></script>
   </html>
