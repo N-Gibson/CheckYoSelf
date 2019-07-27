@@ -6,8 +6,8 @@ class ToDo {
     this.tasks = tasks || [];
   }
 
-  saveToStorage() {
-
+  saveToStorage(listArray) {
+    localStorage.setItem('ToDoListArray', JSON.stringify(listArray))
   }
 
   deleteFromStorage() {
