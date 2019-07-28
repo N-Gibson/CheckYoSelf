@@ -233,7 +233,7 @@ img {
 
 /* Urgent Card */
 
-.card-urgent {
+.article__card-urgent {
   background-color: #FFE79D;
   border: 2px solid #FFC92A;
 }

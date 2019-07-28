@@ -14,8 +14,8 @@ class ToDo {
 
   }
 
-  updateToDo() {
-
+  updateToDo(listArray) {
+    localStorage.setItem('ToDoListArray', JSON.stringify(listArray))
   }
 
   updateTask() {
