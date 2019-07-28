@@ -9,8 +9,8 @@ var aside = document.querySelector('aside');
 var main = document.querySelector('main');
 var makeTaskButton = document.querySelector('.aside__button-list');
 // Functions On Page Load
-// reinstantiateList();
-// persistToDos();
+reinstantiateTasks();
+persistToDos();
 // Event Listeners
 aside.addEventListener('click', deleteLi);
 main.addEventListener('click', mainHandler);
@@ -55,18 +55,14 @@ function deleteLi(event) {
   }
 }
 
-function newTask(card) {
+function newTask(card, arg) {
   var urgent = card.urgent ? 'images/urgent-active.svg' : 'images/urgent.svg';
 
   main.insertAdjacentHTML('afterbegin', `<article class="card" data-id=${card.id}>
   <header class="card__header">${card.title}</header>
-  <div class="card__div">
-    ${addListItems(taskArray)}
-  </div>
-  <div class="card__div">
-      <img class="card__checkbox-inactive" src='images/checkbox.svg'/>
-      <p class="card__p">Idea 1</p>
-    </div>
+    <ul class="card__div-appended">
+      ${addListItems(arg)}
+    </ul>
   <footer class="card__footer">
     <div class="footer__urgent-div">
       <img class="card__urgent" src="${urgent}" alt=""/>
@@ -86,10 +82,10 @@ function addListItems(taskArray) {
     // var completedStatus = listedTasks.tasks[i].completed ? 'checkbox-active.svg' : 'checkbox.svg';
     // var completedParagraphStyle = listedTasks.tasks[i].completed ? 'main__article__task-completed' : 'main__article__task-not-completed';
       ul +=
-    `<span data-id=${taskArray[i].id}>
+    `<li class="card-li" data-id=${taskArray[i].id}>
       <img class="card__checkbox-inactive" src='images/checkbox.svg'/>
       <p>${taskArray[i].task}</p>
-    </span>`
+    </li>`
     }
    return ul;
   };
@@ -100,13 +96,17 @@ function instantiateCard() {
 
   listArray.push(toDo);
   toDo.saveToStorage(listArray);
-  newTask(toDo)
+  newTask(toDo, taskArray);
   taskArray = [];
 }
 
-function reinstantiateList(task) {
- var task = new TaskItem(task.id, task.title, task.complete);
- taskArray.push(task);
+function reinstantiateTasks() {
+  var newArray = [];
+  for(var i = 0; i < listArray.length; i++) {
+    var oldToDo = new ToDo(listArray[i].id, listArray[i].title, listArray[i].urgent, listArray[i].tasks);
+    newArray.push(oldToDo);
+  }
+  listArray = newArray; 
 }
 
 // function reinstantiateList() {
@@ -183,15 +183,11 @@ function emptyInput(input) {
   input.value = '';
 }
 
-// function persistToDos() {
-//   for(var i = 0; i < listArray.length; i++) {
-//     listArray[i].tasks.forEach(task => reinstantiateList(task));
-//   }
-  
-  // var newLists = listArray.map(list => reinstantiateCard(list))
-  // listArray = newLists;
-  // newTask(listArray);
-// }
+function persistToDos() {
+  for(var i = 0; i < listArray.length; i++) {
+    newTask(listArray[i], listArray[i].tasks);
+  }
+}
 
 function findId(event) {
   var target = event.target.closest('.card');
