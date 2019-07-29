@@ -1,7 +1,7 @@
 // Global Variables
 var listArray = JSON.parse(localStorage.getItem('ToDoListArray')) || [];
 var taskArray = [];
-var toDoArrayIndex = null;
+var taskIndex = null;
 var ul = document.querySelector('.aside__ul');
 var plusButton = document.querySelector('.aside__div__img-plus');
 var taskTitle = document.getElementById('title-input');
@@ -145,20 +145,24 @@ function checkTask(event) {
   // debugger;
   var checkBox = event.target.closest('.card__checkbox-inactive');
   var cardIndex = findIndex(event);
-  var index = toDoArrayIndex;
+  if(checkBox) {
+    classArrayId(cardIndex);
+  }
+  var index = parseInt(taskIndex);
   notChecked = 'images/checkbox.svg';
   checked = 'images/checkbox-active.svg';
-  console.log(listArray[cardIndex].tasks[index]);
   if(checkBox && listArray[cardIndex].tasks[index].completed === false) {
     checkBox.src = checked;
-    listArray[index].tasks[index].completed = true;
+    listArray[cardIndex].tasks[index].completed = true;
     // run function to change styles
-    listArray[index].updateToDo(listArray);
-  } else if(checkBox && listArray[index].tasks[index].completed === true) {
+    listArray[cardIndex].updateToDo(listArray);
+    console.log('complete true', listArray[cardIndex].tasks[index]);
+  } else if(checkBox && listArray[cardIndex].tasks[index].completed === true) {
     checkBox.src = notChecked;
-    listArray[index].tasks[index].completed = false;
+    listArray[cardIndex].tasks[index].completed = false;
     // run function to change styles
-    listArray[index].updateToDo(listArray);
+    listArray[cardIndex].updateToDo(listArray);
+    console.log('complete false', listArray[cardIndex].tasks[index]);
   } else {
     return;
   }
@@ -254,9 +258,11 @@ function classArrayId(index) {
 
 function classArrayIndex(storageArr) {
   var li = event.target.closest('li');
+  var target = event.target.closest('.card__checkbox-inactive');
   for(var i = 0; i < storageArr.length; i++) {
-    if(storageArr[i] === parseInt(li.dataset.id)) {
-      toDoArrayIndex = i;
+    if(target && storageArr[i] === parseInt(li.dataset.id)) {
+      taskIndex = i;
     }
   }
+  console.log(taskIndex);
 }
