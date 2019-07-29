@@ -1,6 +1,7 @@
 // Global Variables
 var listArray = JSON.parse(localStorage.getItem('ToDoListArray')) || [];
 var taskArray = [];
+var toDoArrayIndex = null;
 var ul = document.querySelector('.aside__ul');
 var plusButton = document.querySelector('.aside__div__img-plus');
 var taskTitle = document.getElementById('title-input');
@@ -20,6 +21,7 @@ makeTaskButton.addEventListener('click', taskButtonHandler)
 // Handler Functions
 function mainHandler() {
   urgent(event);
+  checkTask(event);
   // findIndex(event)
 }
 
@@ -139,6 +141,28 @@ function reinstantiateTasks() {
 //   newTask(newCard);
 //   taskArray = [];
 // }
+function checkTask(event) {
+  // debugger;
+  var checkBox = event.target.closest('.card__checkbox-inactive');
+  var cardIndex = findIndex(event);
+  var index = toDoArrayIndex;
+  notChecked = 'images/checkbox.svg';
+  checked = 'images/checkbox-active.svg';
+  console.log(listArray[cardIndex].tasks[index]);
+  if(checkBox && listArray[cardIndex].tasks[index].completed === false) {
+    checkBox.src = checked;
+    listArray[index].tasks[index].completed = true;
+    // run function to change styles
+    listArray[index].updateToDo(listArray);
+  } else if(checkBox && listArray[index].tasks[index].completed === true) {
+    checkBox.src = notChecked;
+    listArray[index].tasks[index].completed = false;
+    // run function to change styles
+    listArray[index].updateToDo(listArray);
+  } else {
+    return;
+  }
+}
 
 function urgent(event) {
   var urgentButton = event.target.closest('.card__urgent');
@@ -157,7 +181,7 @@ function urgent(event) {
     toggleUrgency(index);
     listArray[index].updateToDo(listArray);
   } else {
-    return
+    return;
   }
 }
 
@@ -189,6 +213,7 @@ function persistToDos() {
   }
 }
 
+// Can be replaced!!!!!!!!!!!!!!!!
 function findId(event) {
   var target = event.target.closest('.card');
   if(listArray.length > 0 && target) {
@@ -201,6 +226,37 @@ function findIndex(event) {
   for(var i = 0; i < listArray.length; i++) {
     if(targetId === listArray[i].id){
       return i;
+    }
+  }
+}
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+function classArrayId(index) {
+  var target = event.target.closest('.card__checkbox-inactive');
+  var storage = [];
+    if(target && listArray.length > 0){
+      var listOfTasks = listArray[index].tasks
+      for(var i = 0; i < listOfTasks.length; i++) {
+        // classArrayIndex(listOfTasks[i].id, index)
+        storage.push(listOfTasks[i].id)
+      }
+    }
+    classArrayIndex(storage)
+    // return parseInt(target.dataset.id);
+}
+
+// function classArrayIndex(passedId, passedIndex) {
+//   for(var i = 0; i < listArray[passedIndex].tasks.length; i++) {
+//     if(passedId === listArray[passedIndex].tasks[i].id) {
+//       return console.log(i)
+//     }
+//   }
+// }
+
+function classArrayIndex(storageArr) {
+  var li = event.target.closest('li');
+  for(var i = 0; i < storageArr.length; i++) {
+    if(storageArr[i] === parseInt(li.dataset.id)) {
+      toDoArrayIndex = i;
     }
   }
 }
