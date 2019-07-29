@@ -9,6 +9,7 @@ var taskItem = document.getElementById('task-item');
 var aside = document.querySelector('aside');
 var main = document.querySelector('main');
 var makeTaskButton = document.querySelector('.aside__button-list');
+var clearButton = document.querySelector('.aside__button-clear');
 // Functions On Page Load
 reinstantiateTasks();
 persistToDos();
@@ -17,6 +18,7 @@ aside.addEventListener('click', deleteLi);
 main.addEventListener('click', mainHandler);
 plusButton.addEventListener('click', newLi);
 makeTaskButton.addEventListener('click', taskButtonHandler)
+clearButton.addEventListener('click', clearAll);
 
 // Handler Functions
 function mainHandler() {
@@ -26,14 +28,29 @@ function mainHandler() {
 }
 
 function taskButtonHandler() {
+  if(taskTitle.value === '' || ul.hasChildNodes() === false) {
+    return;
+  } else {
   // debugger;
   // create the li's (which happens on click of +)
   // make the new card instantiation
-  instantiateCard()
+  instantiateCard();
+  emptyInput(taskTitle);
+  emptyUl();
   // Push the list items into the class array
   // Save to storage 
   // Append the card to the dom
   // newTask();
+  }
+}
+
+function clearAll() {
+  if(taskTitle.value === '' && ul.hasChildNodes() === false) {
+    return;
+  } else {
+    emptyInput(taskTitle);
+    emptyUl();
+  }
 }
 // Functions
 function newLi() {
@@ -63,7 +80,7 @@ function newTask(card, arg) {
   main.insertAdjacentHTML('afterbegin', `<article class="card" data-id=${card.id}>
   <header class="card__header">${card.title}</header>
     <ul class="card__div-appended">
-      ${addListItems(arg)}
+      ${addListItems(arg, card)}
     </ul>
   <footer class="card__footer">
     <div class="footer__urgent-div">
@@ -78,14 +95,16 @@ function newTask(card, arg) {
 </article>`)
 }
 
-function addListItems(taskArray) {
+function addListItems(taskArray, card) {
   var ul = '';
+  var checked = card.tasks.completed ? 'images/checkbox-active.svg' : 'images/checkbox.svg'
+
   for (var i = 0; i < taskArray.length; i++) {
     // var completedStatus = listedTasks.tasks[i].completed ? 'checkbox-active.svg' : 'checkbox.svg';
     // var completedParagraphStyle = listedTasks.tasks[i].completed ? 'main__article__task-completed' : 'main__article__task-not-completed';
       ul +=
     `<li class="card-li" data-id=${taskArray[i].id}>
-      <img class="card__checkbox-inactive" src='images/checkbox.svg'/>
+      <img class="card__checkbox-inactive" src=${checked}/>
       <p>${taskArray[i].task}</p>
     </li>`
     }
@@ -149,8 +168,8 @@ function checkTask(event) {
     classArrayId(cardIndex);
   }
   var index = parseInt(taskIndex);
-  notChecked = 'images/checkbox.svg';
-  checked = 'images/checkbox-active.svg';
+  var notChecked = 'images/checkbox.svg';
+  var checked = 'images/checkbox-active.svg';
   if(checkBox && listArray[cardIndex].tasks[index].completed === false) {
     checkBox.src = checked;
     listArray[cardIndex].tasks[index].completed = true;
@@ -170,15 +189,15 @@ function checkTask(event) {
 
 function urgent(event) {
   var urgentButton = event.target.closest('.card__urgent');
-  var index = findIndex(event)
+  var cardIndex = findIndex(event)
   var notUrgent = 'images/urgent.svg';
   var urgent = 'images/urgent-active.svg';
 
-  if(urgentButton && listArray[index].urgent === false) {
+  if(urgentButton && listArray[cardIndex].urgent === false) {
     urgentButton.src = urgent;
-    listArray[index].urgent = true;
-    toggleUrgency(index);
-    listArray[index].updateToDo(listArray);
+    listArray[cardIndex].urgent = true;
+    toggleUrgency(cardIndex);
+    listArray[cardIndex].updateToDo(listArray);
   } else if(urgentButton && listArray[index].urgent === true) {
     urgentButton.src = notUrgent;
     listArray[index].urgent = false;
@@ -209,6 +228,10 @@ function toggleUrgency(index) {
 
 function emptyInput(input) {
   input.value = '';
+}
+
+function emptyUl() {
+  ul.innerHTML = '';
 }
 
 function persistToDos() {
