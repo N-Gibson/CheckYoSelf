@@ -25,8 +25,8 @@ clearButton.addEventListener('click', clearAll);
 // Handler Functions
 function mainHandler() {
   urgent(event);
-  deleteCard(event);
   checkTask(event);
+  // deleteCard(event);
   // findIndex(event)
 }
 
@@ -34,7 +34,6 @@ function taskButtonHandler() {
   if(taskTitle.value === '' || ul.hasChildNodes() === false) {
     return;
   } else {
-  // debugger;
   // create the li's (which happens on click of +)
   // make the new card instantiation
   instantiateCard();
@@ -61,7 +60,7 @@ function newLi() {
     return;
   } else {
   var li = new TaskItem(Date.now(), taskItem.value, false);
-  ul.insertAdjacentHTML('beforeend', ` <li data-id=${li.id} class="aside__li">
+  ul.insertAdjacentHTML('beforeend', ` <li data-id=${li.id} data-completed=${li.completed} class="aside__li">
   <img class="aside__ul-img" src="images/delete.svg">
   <p class="aside__ul-p">${taskItem.value}</p> 
 </li>`)
@@ -73,17 +72,19 @@ function newLi() {
 function deleteLi(event) {
   if(event.target.closest('.aside__ul-img')) {
     event.target.closest('.aside__li').remove();
+    classArrayIndex(taskArray);
+    console.log(index);
     emptyInput(taskItem);
   }
 }
 
-function newTask(card, arg) {
+function newTask(card, toDo) {
   var urgent = card.urgent ? 'images/urgent-active.svg' : 'images/urgent.svg';
 
-  main.insertAdjacentHTML('afterbegin', `<article class="card" data-id=${card.id}>
+  main.insertAdjacentHTML('afterbegin', `<article class="card" data-id=${card.id} data-urgent=${card.urgent}>
   <header class="card__header">${card.title}</header>
     <ul class="card__div-appended">
-      ${addListItems(arg, card)}
+      ${addListItems(toDo, card)}
     </ul>
   <footer class="card__footer">
     <div class="footer__urgent-div">
@@ -99,15 +100,17 @@ function newTask(card, arg) {
 }
 
 function addListItems(taskArray, card) {
+  // debugger;
   var ul = '';
-  var checked = card.tasks.completed ? 'images/checkbox-active.svg' : 'images/checkbox.svg'
-
+  var checked = 'images/checkbox-active.svg';
+  var notChecked = 'images/checkbox.svg';
+  console.log(card.tasks.completed)
+  
   for (var i = 0; i < taskArray.length; i++) {
-    // var completedStatus = listedTasks.tasks[i].completed ? 'checkbox-active.svg' : 'checkbox.svg';
-    // var completedParagraphStyle = listedTasks.tasks[i].completed ? 'main__article__task-completed' : 'main__article__task-not-completed';
-      ul +=
+    var checked = card.tasks.completed ? checked : notChecked
+    ul +=
     `<li class="card-li" data-id=${taskArray[i].id}>
-      <img class="card__checkbox-inactive" src=${checked}/>
+      <img class="card__checkbox-inactive" src=${checked}>
       <p>${taskArray[i].task}</p>
     </li>`
     }
@@ -133,38 +136,7 @@ function reinstantiateTasks() {
   listArray = newArray; 
 }
 
-// function reinstantiateList() {
-//   var holder = []
-//   if(localStorage.length === 0) {
-//     return;
-//   } else {
-//   for(var i = 0; i < listArray.length; i++) {
-//     var oldTasks = new TaskItem(listArray[i].id, listArray[i].task, listArray[i].completed);
-//     holder.push(oldTasks)
-//   }
-//   taskArray = holder;
-//   console.log(taskArray);
-//   reinstantiateCard();
-//   }
-// }
-
-// function reinstantiateCard() {
-//   if(localStorage.length === 0) {
-//     return;
-//   } else {
-//     for(var i = 0; i < listArray.length; i++) {
-//       var newCard = new ToDo(listArray[i].id, listArray[i].title, listArray[i].urgent, taskArray);
-//       listArray.push(newCard);
-//       }
-//     }
-
-//   // persistToDos();
-//   newCard.saveToStorage(listArray);
-//   newTask(newCard);
-//   taskArray = [];
-// }
 function checkTask(event) {
-  // debugger;
   var checkBox = event.target.closest('.card__checkbox-inactive');
   var cardIndex = findIndex(event);
   if(checkBox) {
@@ -191,6 +163,7 @@ function checkTask(event) {
 }
 
 function urgent(event) {
+  // debugger;
   var urgentButton = event.target.closest('.card__urgent');
   var cardIndex = findIndex(event)
   var notUrgent = 'images/urgent.svg';
@@ -199,33 +172,36 @@ function urgent(event) {
   if(urgentButton && listArray[cardIndex].urgent === false) {
     urgentButton.src = urgent;
     listArray[cardIndex].urgent = true;
-    toggleUrgency(cardIndex);
     listArray[cardIndex].updateToDo(listArray);
-  } else if(urgentButton && listArray[index].urgent === true) {
+    toggleUrgency(cardIndex, event);
+  } else if(urgentButton && listArray[cardIndex].urgent === true) {
     urgentButton.src = notUrgent;
-    listArray[index].urgent = false;
-    toggleUrgency(index);
-    listArray[index].updateToDo(listArray);
+    listArray[cardIndex].urgent = false;
+    toggleUrgency(cardIndex, event);
+    listArray[cardIndex].updateToDo(listArray);
   } else {
     return;
   }
 }
 
-function toggleUrgency(index) {
-  var card = document.querySelector('article');
-  var cardHeader = document.querySelector('.card__header');
-  var cardFooter = document.querySelector('.card__footer');
-  var cardUrgentText = document.querySelector('.card__urgent-text');
-  if(listArray[index].urgent === true) {
+function toggleUrgency(cardIndex, event) {
+  var card = event.target.closest('.card');
+  // console.log(event);
+  var cardHeader = event.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
+  var cardFooter = event.target.parentElement.parentElement;
+  var cardUrgentText = event.target.nextElementSibling;
+  if(listArray[cardIndex].urgent === true) {
     card.classList.add('article__card-urgent');
     cardHeader.classList.add('card__header-urgent');
     cardFooter.classList.add('card__footer-urgent');
     cardUrgentText.classList.add('card__urgent-text-urgent');
+    listArray[cardIndex].updateToDo(listArray);
   } else {
     card.classList.remove('article__card-urgent');
     cardHeader.classList.remove('card__header-urgent');
     cardFooter.classList.remove('card__footer-urgent');
     cardUrgentText.classList.remove('card__urgent-text-urgent');
+    listArray[cardIndex].updateToDo(listArray);
   }
 }
 
@@ -241,9 +217,40 @@ function persistToDos() {
   for(var i = 0; i < listArray.length; i++) {
     newTask(listArray[i], listArray[i].tasks);
   }
+  persistUrgency();
+  // persistCheck();
 }
 
-// Can be replaced!!!!!!!!!!!!!!!!
+function persistUrgency() {
+  var card = document.querySelectorAll('.card');
+  for(var i = 0; i < card.length; i++) {
+    console.log(card[i]);
+    console.log(card[i].lastElementChild);
+    if(card[i].dataset.urgent === 'true') {
+      card[i].classList.add('article__card-urgent');
+      card[i].firstElementChild.classList.add('card__header-urgent');
+      card[i].lastElementChild.classList.add('card__footer-urgent');
+      card[i].lastElementChild.firstElementChild.lastElementChild.classList.add('card__urgent-text-urgent');
+    } 
+  }
+}
+
+function persistCheck() {
+  // debugger;
+  var li = document.querySelector('.card__li');
+  var notChecked = 'images/checkbox.svg';
+  var checked = 'images/checkbox-active.svg';
+  for(var i = 0; i < listArray.length; i++) {
+    if(listArray[i].tasks.forEach(task => task.complete === true)) {
+      checkBox.src = checked;
+    } else if(listArray[i].tasks.forEach(task => task.complete === false)) {
+      checkBox.src = notChecked;
+    }
+  }
+}
+
+
+
 function findId(event) {
   var target = event.target.closest('.card');
   if(listArray.length > 0 && target) {
@@ -259,7 +266,7 @@ function findIndex(event) {
     }
   }
 }
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 function classArrayId(index) {
   var target = event.target.closest('.card__checkbox-inactive');
   var storage = [];
@@ -273,14 +280,6 @@ function classArrayId(index) {
     classArrayIndex(storage)
     // return parseInt(target.dataset.id);
 }
-
-// function classArrayIndex(passedId, passedIndex) {
-//   for(var i = 0; i < listArray[passedIndex].tasks.length; i++) {
-//     if(passedId === listArray[passedIndex].tasks[i].id) {
-//       return console.log(i)
-//     }
-//   }
-// }
 
 function classArrayIndex(storageArr) {
   var li = event.target.closest('li');
@@ -297,9 +296,12 @@ function deleteCard(event) {
   var card = event.target.closest('.card');
   var cardDelete = event.target.closest('.card__delete');
   var cardIndex = findIndex(event);
-  for(var i = 0; i < listArray.length; i++) {
-    console.log(listArray[cardIndex].tasks[i].completed);
+  for(var i = 0; i < listArray[cardIndex].tasks.length; i++) {
+    if(cardDelete && listArray[cardIndex].tasks[i].completed) {
+      card.remove();
+    }
   }
+  listArray[cardIndex].deleteFromStorage(cardIndex);
 }
 
 function prompt() {
