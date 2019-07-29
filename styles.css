@@ -268,3 +268,19 @@ img {
   font-size: .7em;
   margin: 5px;
 }
+
+/* Prompt Message */
+
+.prompt-message {
+  background-color: #1F1D3D;
+  color: #FFF;
+  display: block;
+  font-size: 2em;
+  font-weight: 700;
+  height: 200px;
+  margin: 60px;
+  position: relative;
+  padding: 74px;
+  text-align: center;
+  width: 750px;
+}

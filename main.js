@@ -10,9 +10,11 @@ var aside = document.querySelector('aside');
 var main = document.querySelector('main');
 var makeTaskButton = document.querySelector('.aside__button-list');
 var clearButton = document.querySelector('.aside__button-clear');
+var prompt = document.querySelector('.prompt-message');
 // Functions On Page Load
 reinstantiateTasks();
 persistToDos();
+// prompt();
 // Event Listeners
 aside.addEventListener('click', deleteLi);
 main.addEventListener('click', mainHandler);
@@ -23,6 +25,7 @@ clearButton.addEventListener('click', clearAll);
 // Handler Functions
 function mainHandler() {
   urgent(event);
+  deleteCard(event);
   checkTask(event);
   // findIndex(event)
 }
@@ -288,4 +291,21 @@ function classArrayIndex(storageArr) {
     }
   }
   console.log(taskIndex);
+}
+
+function deleteCard(event) {
+  var card = event.target.closest('.card');
+  var cardDelete = event.target.closest('.card__delete');
+  var cardIndex = findIndex(event);
+  for(var i = 0; i < listArray.length; i++) {
+    console.log(listArray[cardIndex].tasks[i].completed);
+  }
+}
+
+function prompt() {
+  if(listArray.length < 1) {
+    main.insertAdjacentHTML('afterbegin', `<p class='prompt-message'>Add a TO <span class='prompt-span'>DO'</span> LIST</p>`)
+  } else if(listArray.length >= 1) {
+    prompt.remove();
+  }
 }
