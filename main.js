@@ -295,15 +295,12 @@ function deleteCard(event) {
   var card = event.target.closest('.card');
   var cardDelete = event.target.closest('.card__delete');
   var cardIndex = findIndex(event);
+  var arr = listArray[cardIndex].tasks.filter(task => task.completed === true);
 
-  for(var i = 0; i < listArray.length; i++) {
-    if(cardDelete && listArray[cardIndex].tasks[listArray[cardIndex].tasks.length - 1].completed === true && listArray[cardIndex].tasks[0].completed === true) {
-      card.remove();
-      listArray[cardIndex].deleteFromStorage(cardIndex);
-      console.log('list', listArray.length);
-      console.log('localStorage', localStorage.length);
-      promptList();
-    }
+  if(cardDelete && arr.length === listArray[cardIndex].tasks.length) {
+    card.remove();
+    listArray[cardIndex].deleteFromStorage(cardIndex);
+    promptList();
   }
 }
 
@@ -322,23 +319,3 @@ function search() {
     main.innerHTML = '';
     results.map(result => newTask(result, result.tasks));
 }
-
-// function searchFilter() {
-//   var search = searchBox.value.toLowerCase();
-//   var results = ideaArray.filter(function(cardObj) {
-//     return (
-//       (cardObj.title.toLowerCase().includes(search) ||
-//         cardObj.body.toLowerCase().includes(search)) &&
-//       (qualitySearch === 0 || cardObj.quality === qualitySearch) &&
-//       (cardObj.star === starSearch || starSearch === 0)
-//     );
-//   });
-//   if (results.length === ideaArray.length) {
-//     persist();
-//   } else {
-//     main.innerHTML = '';
-//     results.map(function(cardObj) {
-//       appendCard(cardObj);
-//     });
-//   }
-// }
