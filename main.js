@@ -326,9 +326,19 @@ function promptList() {
 function search() {
   var lowerCaseSearch = searchBar.value.toLowerCase();
   var results = listArray.filter(result => result.title.toLowerCase().includes(lowerCaseSearch));
-
-    main.innerHTML = '';
+  
+  main.innerHTML = '';
+  if(filterButton.dataset.toggle === 'false') {
     results.map(result => newTask(result, result.tasks));
+  } else {
+    for(var i = 0; i < results.length; i++) {
+      var storage = []
+      if(results[i].urgent === true) {
+        storage.push(results[i]);
+        storage.map(result => newTask(result, result.tasks));
+      }
+    }
+  }
 }
 
 function filterOn() {

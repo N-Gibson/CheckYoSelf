@@ -290,7 +290,8 @@ img {
 
 /* Prompt Message */
 
-.prompt-message {
+.prompt-message,
+.urgent-prompt {
   background-color: #1F1D3D;
   color: #FFF;
   display: block;
