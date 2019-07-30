@@ -14,7 +14,7 @@ var prompt = document.querySelector('.prompt-message');
 // Functions On Page Load
 reinstantiateTasks();
 persistToDos();
-// prompt();
+promptList();
 // Event Listeners
 aside.addEventListener('click', deleteLi);
 main.addEventListener('click', mainHandler);
@@ -26,7 +26,7 @@ clearButton.addEventListener('click', clearAll);
 function mainHandler() {
   urgent(event);
   checkTask(event);
-  // deleteCard(event);
+  deleteCard(event);
   // findIndex(event)
 }
 
@@ -39,6 +39,7 @@ function taskButtonHandler() {
   instantiateCard();
   emptyInput(taskTitle);
   emptyUl();
+  promptList();
   // Push the list items into the class array
   // Save to storage 
   // Append the card to the dom
@@ -117,7 +118,6 @@ function addListItems(taskArray, card) {
   
   for (var i = 0; i < taskArray.length; i++) {
     var checked = card.tasks[i].completed ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
-    console.log(card.tasks[i].completed)
     var classToItalicize = card.tasks[i].completed ? 'italicized-text' : 'nothing';
     ul +=
     `<li class="card-li" data-id=${taskArray[i].id} data-completed=${taskArray[i].completed}>
@@ -312,20 +312,22 @@ function deleteCard(event) {
   var card = event.target.closest('.card');
   var cardDelete = event.target.closest('.card__delete');
   var cardIndex = findIndex(event);
-  var ul = event.target.closest('.card__div-appended');
-  console.log(ul);
   for(var i = 0; i < listArray[cardIndex].tasks.length; i++) {
-    if(cardDelete && listArray[cardIndex].tasks[i].completed) {
+    if(cardDelete && listArray[cardIndex].tasks[listArray[cardIndex].tasks.length - 1].completed === true && listArray[cardIndex].tasks[0].completed === true) {
       card.remove();
+      listArray[cardIndex].deleteFromStorage(cardIndex);
+      promptList();
+    } else {
+      promptList();
+      return;
     }
   }
-  listArray[cardIndex].deleteFromStorage(cardIndex);
 }
 
-function prompt() {
-  if(listArray.length < 1) {
-    main.insertAdjacentHTML('afterbegin', `<p class='prompt-message'>Add a TO <span class='prompt-span'>DO'</span> LIST</p>`)
-  } else if(listArray.length >= 1) {
-    prompt.remove();
+function promptList() {
+  if(listArray.length !== 0) {
+    prompt.style.display = 'none';
+  } else {
+    prompt.style.display = 'visible';
   }
 }
