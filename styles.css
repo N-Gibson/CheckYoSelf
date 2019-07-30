@@ -28,6 +28,7 @@ header {
 
 h1 {
   color: #FFF;
+  font-size: 2.5em;
   margin: auto 0px;
 }
 
@@ -40,6 +41,7 @@ span {
   height: 50px;
   justify-content: space-between;
   margin: auto 0px;
+  width: 28%;
 }
 
 .header__div-img {
@@ -52,6 +54,7 @@ span {
 .header__div-input {
   border: none;
   border-radius: 0px 2.5px 2.5px 0px;
+  width: 100%;
 }
 
 /* Aside */
@@ -59,20 +62,22 @@ span {
 aside {
   background-color: #59798B;
   grid-area: aside;
-  padding: 20px;
   min-height: 100vh;
+  padding-top: 20px;
 }
 
 label {
   color: #B5C4CB;
+  margin-left: 20px;
 }
 
 .aside__input-title {
   border: 2px solid #1F1E3D;
   border-radius: 2.5px;
+  display: block;
   height: 50px;
-  margin-top: 10px;
-  width: 100%;
+  margin: 10px auto;
+  width: 90%;
 }
 
 ul {
@@ -104,13 +109,14 @@ ul {
 .aside__div-button-plus {
   cursor: pointer;
   display: flex;
-  margin: 10px 0px;
+  margin: 10px auto;
+  width: 90%;
 }
 
 .aside__div__input-item {
   border: 2px solid #1F1E3D;
   border-radius: 2.5px 0px 0px 2.5px;
-  width: 90%;
+  width: 100%;
 }
 
 .aside__div__img-plus {
@@ -127,10 +133,15 @@ ul {
   border-radius: 2.5px;
   color: #FFF;
   cursor: pointer;
+  display: block;
   font-size: 1.2em;
   height: 50px;
-  margin: 20px 0px;
-  width: 100%;
+  margin: 20px auto;
+  width: 90%;
+}
+
+.aside__button-filter-toggle {
+  background-color: #F04924;
 }
 
 .aside__button-list:hover,
@@ -274,6 +285,7 @@ img {
 .italicized-text{
   color: #75929F;
   font-style: italic;
+  text-decoration: line-through;
 }
 
 /* Prompt Message */
@@ -290,4 +302,52 @@ img {
   padding: 74px;
   text-align: center;
   width: 750px;
+}
+
+/* Media Queries */
+
+@media screen and (max-width: 700px) {
+  body {
+    display: block;
+  }
+
+  header {
+    display: block;
+    padding: 10px 30px;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .header__div {
+    width: 100%;
+    margin: 10px auto;
+  }
+
+  .header__div-input {
+    width: 100%;
+  }
+
+  aside {
+    min-height: 70vh;
+  }
+
+  label {
+    margin-left: 40px;
+  }
+
+  main {
+    padding: 10px;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  h1 {
+    font-size: 2em;
+  }
+
+  label {
+    margin-left: 20px;
+  }
 }

@@ -12,6 +12,7 @@ var makeTaskButton = document.querySelector('.aside__button-list');
 var clearButton = document.querySelector('.aside__button-clear');
 var prompt = document.querySelector('.prompt-message');
 var searchBar = document.querySelector('.header__div-input');
+var filterButton = document.querySelector('.aside__button-filter');
 
 // Functions On Page Load
 reinstantiateTasks();
@@ -25,6 +26,7 @@ plusButton.addEventListener('click', newLi);
 makeTaskButton.addEventListener('click', taskButtonHandler);
 clearButton.addEventListener('click', clearAll);
 searchBar.addEventListener('keyup', search);
+filterButton.addEventListener('click', filterHandler);
 
 // Handler Functions
 function mainHandler() {
@@ -50,6 +52,14 @@ function clearAll() {
   } else {
     emptyInput(taskTitle);
     emptyUl();
+  }
+}
+
+function filterHandler() {
+  if(filterButton.classList.value === '.aside__button-filter') {
+    filterOn();
+  } else {
+    filterOff();
   }
 }
 
@@ -186,14 +196,14 @@ function urgent(event) {
 
   if(urgentButton && listArray[cardIndex].urgent === false) {
     urgentButton.src = urgent;
-    listArray[cardIndex].urgent = true;
+    // listArray[cardIndex].urgent = true;
     listArray[cardIndex].updateToDo(listArray);
     toggleUrgency(cardIndex, event);
   } else if(urgentButton && listArray[cardIndex].urgent === true) {
     urgentButton.src = notUrgent;
-    listArray[cardIndex].urgent = false;
-    toggleUrgency(cardIndex, event);
+    // listArray[cardIndex].urgent = false;
     listArray[cardIndex].updateToDo(listArray);
+    toggleUrgency(cardIndex, event);
   } else {
     return;
   }
@@ -210,13 +220,13 @@ function toggleUrgency(cardIndex, event) {
     cardHeader.classList.add('card__header-urgent');
     cardFooter.classList.add('card__footer-urgent');
     cardUrgentText.classList.add('card__urgent-text-urgent');
-    listArray[cardIndex].updateToDo(listArray);
+    // listArray[cardIndex].updateToDo(listArray);
   } else {
     card.classList.remove('article__card-urgent');
     cardHeader.classList.remove('card__header-urgent');
     cardFooter.classList.remove('card__footer-urgent');
     cardUrgentText.classList.remove('card__urgent-text-urgent');
-    listArray[cardIndex].updateToDo(listArray);
+    // listArray[cardIndex].updateToDo(listArray);
   }
 }
 
@@ -291,7 +301,6 @@ function classArrayIndex(storageArr) {
 }
 
 function deleteCard(event) {
-  // debugger;
   var card = event.target.closest('.card');
   var cardDelete = event.target.closest('.card__delete');
   var cardIndex = findIndex(event);
@@ -300,8 +309,8 @@ function deleteCard(event) {
   if(cardDelete && arr.length === listArray[cardIndex].tasks.length) {
     card.remove();
     listArray[cardIndex].deleteFromStorage(cardIndex);
-    promptList();
   }
+  promptList();
 }
 
 function promptList() {
@@ -318,4 +327,17 @@ function search() {
 
     main.innerHTML = '';
     results.map(result => newTask(result, result.tasks));
+}
+
+function filterOn() {
+  main.innerHTML = '';
+  filteredArray = listArray.filter(list => list.urgent === true);
+  filteredArray.map(filteredTasks => newTask(filteredTasks, filteredTasks.tasks));
+  filterButton.classList.add('aside__button-filter-toggle');
+}
+
+function filterOff() {
+  main.innerHTML = '';
+  persistToDos();
+  filterButton.classList.remove('aside__button-filter-toggle');
 }
