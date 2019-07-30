@@ -60,7 +60,7 @@ function newLi() {
     return;
   } else {
   var li = new TaskItem(Date.now(), taskItem.value, false);
-  ul.insertAdjacentHTML('beforeend', ` <li data-id=${li.id} data-completed=${li.completed} class="aside__li">
+  ul.insertAdjacentHTML('beforeend', `<li data-id=${li.id} data-completed=${li.completed} class="aside__li">
   <img class="aside__ul-img" src="images/delete.svg">
   <p class="aside__ul-p">${taskItem.value}</p> 
 </li>`)
@@ -70,11 +70,24 @@ function newLi() {
 }
 
 function deleteLi(event) {
+
   if(event.target.closest('.aside__ul-img')) {
     event.target.closest('.aside__li').remove();
+    liIndex();
     classArrayIndex(taskArray);
-    console.log(index);
     emptyInput(taskItem);
+  }
+}
+
+function liIndex() {
+  // debugger;
+  if(event.target.closest('.aside__ul-img')) {
+    for(var i = 0; i < taskArray.length; i++) {
+      if(taskArray[i].id === event.target.parentElement.dataset.id) {
+        taskArray.splice(i, 1);
+      }
+      console.log(event.target.parentElement.id);
+    }
   }
 }
 
@@ -100,18 +113,16 @@ function newTask(card, toDo) {
 }
 
 function addListItems(taskArray, card) {
-  // debugger;
   var ul = '';
-  var checked = 'images/checkbox-active.svg';
-  var notChecked = 'images/checkbox.svg';
-  console.log(card.tasks.completed)
   
   for (var i = 0; i < taskArray.length; i++) {
-    var checked = card.tasks.completed ? checked : notChecked
+    var checked = card.tasks[i].completed ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
+    console.log(card.tasks[i].completed)
+    var classToItalicize = card.tasks[i].completed ? 'italicized-text' : 'nothing';
     ul +=
-    `<li class="card-li" data-id=${taskArray[i].id}>
+    `<li class="card-li" data-id=${taskArray[i].id} data-completed=${taskArray[i].completed}>
       <img class="card__checkbox-inactive" src=${checked}>
-      <p>${taskArray[i].task}</p>
+      <p class=${classToItalicize}>${taskArray[i].task}</p>
     </li>`
     }
    return ul;
@@ -145,18 +156,17 @@ function checkTask(event) {
   var index = parseInt(taskIndex);
   var notChecked = 'images/checkbox.svg';
   var checked = 'images/checkbox-active.svg';
+  var p = event.target.nextElementSibling;
   if(checkBox && listArray[cardIndex].tasks[index].completed === false) {
     checkBox.src = checked;
     listArray[cardIndex].tasks[index].completed = true;
-    // run function to change styles
     listArray[cardIndex].updateToDo(listArray);
-    console.log('complete true', listArray[cardIndex].tasks[index]);
+    p.classList.add('italicized-text');
   } else if(checkBox && listArray[cardIndex].tasks[index].completed === true) {
     checkBox.src = notChecked;
     listArray[cardIndex].tasks[index].completed = false;
-    // run function to change styles
     listArray[cardIndex].updateToDo(listArray);
-    console.log('complete false', listArray[cardIndex].tasks[index]);
+    p.classList.remove('italicized-text');
   } else {
     return;
   }
@@ -224,8 +234,6 @@ function persistToDos() {
 function persistUrgency() {
   var card = document.querySelectorAll('.card');
   for(var i = 0; i < card.length; i++) {
-    console.log(card[i]);
-    console.log(card[i].lastElementChild);
     if(card[i].dataset.urgent === 'true') {
       card[i].classList.add('article__card-urgent');
       card[i].firstElementChild.classList.add('card__header-urgent');
@@ -235,19 +243,27 @@ function persistUrgency() {
   }
 }
 
-function persistCheck() {
-  // debugger;
-  var li = document.querySelector('.card__li');
-  var notChecked = 'images/checkbox.svg';
-  var checked = 'images/checkbox-active.svg';
-  for(var i = 0; i < listArray.length; i++) {
-    if(listArray[i].tasks.forEach(task => task.complete === true)) {
-      checkBox.src = checked;
-    } else if(listArray[i].tasks.forEach(task => task.complete === false)) {
-      checkBox.src = notChecked;
-    }
-  }
-}
+// function persistCheck() {
+//   var checkBox = 
+//   var notChecked = 'images/checkbox.svg';
+//   var checked = 'images/checkbox-active.svg';
+//   // debugger;
+//   // var card = document.querySelectorAll('.card');
+//   // for(var i = 0; i < card.length; i++) {
+//   //   if(card[i].attributes[2].nodeValue === 'true') {
+//   //     card[i].firstElementChild.nextElementSibling.children.classList.add('.italicized-text');
+
+//   //   } else if(listArray[i].tasks.forEach(task => task.complete === false)) {
+//   //     checkBox.src = notChecked;
+//   //   }
+//   // }
+//   var li = document.querySelectorAll('.card__li')
+//   for(var i = 0; i < li.length; i++) {
+//     if(li[i].dataset.completed === 'true') {
+
+//     }
+//   }
+// }
 
 
 
@@ -296,6 +312,8 @@ function deleteCard(event) {
   var card = event.target.closest('.card');
   var cardDelete = event.target.closest('.card__delete');
   var cardIndex = findIndex(event);
+  var ul = event.target.closest('.card__div-appended');
+  console.log(ul);
   for(var i = 0; i < listArray[cardIndex].tasks.length; i++) {
     if(cardDelete && listArray[cardIndex].tasks[i].completed) {
       card.remove();
