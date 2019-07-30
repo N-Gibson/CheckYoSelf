@@ -63,7 +63,7 @@ aside {
   background-color: #59798B;
   grid-area: aside;
   min-height: 100vh;
-  padding-top: 20px;
+  padding: 20px 0px;
 }
 
 label {
@@ -87,7 +87,7 @@ ul {
 
 .aside__li {
   display: flex;
-  margin-left: 10px;
+  margin-left: 30px;
 }
 
 .aside__ul-img {
@@ -160,8 +160,8 @@ main {
   background-color: #F2F6F7;
   display: grid;
   grid-area: main;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, .1fr));
   min-height: 100vh;
   padding: 40px;
 }
@@ -290,7 +290,8 @@ img {
 
 /* Prompt Message */
 
-.prompt-message {
+.prompt-message,
+.urgent-prompt {
   background-color: #1F1D3D;
   color: #FFF;
   display: block;
@@ -330,7 +331,7 @@ img {
   }
 
   aside {
-    min-height: 70vh;
+    min-height: 60vh;
   }
 
   label {
@@ -338,7 +339,7 @@ img {
   }
 
   main {
-    padding: 10px;
+    padding: 50px;
   }
 }
 
@@ -349,5 +350,9 @@ img {
 
   label {
     margin-left: 20px;
+  }
+
+  main {
+    padding: 30px;
   }
 }

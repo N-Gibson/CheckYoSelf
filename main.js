@@ -33,6 +33,7 @@ function mainHandler() {
   urgent(event);
   checkTask(event);
   deleteCard(event);
+  promptList();
 }
 
 function taskButtonHandler() {
@@ -56,7 +57,7 @@ function clearAll() {
 }
 
 function filterHandler() {
-  if(filterButton.classList.value === '.aside__button-filter') {
+  if(filterButton.dataset.toggle === 'false') {
     filterOn();
   } else {
     filterOff();
@@ -304,17 +305,18 @@ function deleteCard(event) {
   var card = event.target.closest('.card');
   var cardDelete = event.target.closest('.card__delete');
   var cardIndex = findIndex(event);
+  if(cardDelete) {
   var arr = listArray[cardIndex].tasks.filter(task => task.completed === true);
-
+  
   if(cardDelete && arr.length === listArray[cardIndex].tasks.length) {
     card.remove();
     listArray[cardIndex].deleteFromStorage(cardIndex);
+    }
   }
-  promptList();
 }
 
 function promptList() {
-  if(listArray.length !== 0) {
+  if(listArray.length > 0) {
     prompt.style.display = 'none';
   } else {
     prompt.style.display = 'visible';
@@ -324,9 +326,19 @@ function promptList() {
 function search() {
   var lowerCaseSearch = searchBar.value.toLowerCase();
   var results = listArray.filter(result => result.title.toLowerCase().includes(lowerCaseSearch));
-
-    main.innerHTML = '';
+  
+  main.innerHTML = '';
+  if(filterButton.dataset.toggle === 'false') {
     results.map(result => newTask(result, result.tasks));
+  } else {
+    for(var i = 0; i < results.length; i++) {
+      var storage = []
+      if(results[i].urgent === true) {
+        storage.push(results[i]);
+        storage.map(result => newTask(result, result.tasks));
+      }
+    }
+  }
 }
 
 function filterOn() {
@@ -334,10 +346,19 @@ function filterOn() {
   filteredArray = listArray.filter(list => list.urgent === true);
   filteredArray.map(filteredTasks => newTask(filteredTasks, filteredTasks.tasks));
   filterButton.classList.add('aside__button-filter-toggle');
+  filterButton.dataset.toggle = true;
+  urgentMessage();
 }
 
 function filterOff() {
   main.innerHTML = '';
   persistToDos();
   filterButton.classList.remove('aside__button-filter-toggle');
+  filterButton.dataset.toggle = false;
+}
+
+function urgentMessage() {
+  if(main.innerHTML === '') {
+    main.insertAdjacentHTML('afterbegin', `<p class=urgent-prompt>Gotta have <span>yo'</span> self some urgency!</p>`)
+  }
 }
