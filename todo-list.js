@@ -16,6 +16,7 @@ class ToDo {
   }
 
   updateToDo(listArray) {
+    this.urgent = !this.urgent;
     localStorage.setItem('ToDoListArray', JSON.stringify(listArray))
   }
 
