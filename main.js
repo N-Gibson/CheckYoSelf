@@ -11,6 +11,7 @@ var main = document.querySelector('main');
 var makeTaskButton = document.querySelector('.aside__button-list');
 var clearButton = document.querySelector('.aside__button-clear');
 var prompt = document.querySelector('.prompt-message');
+var searchBar = document.querySelector('.header__div-input');
 
 // Functions On Page Load
 reinstantiateTasks();
@@ -21,8 +22,9 @@ promptList();
 aside.addEventListener('click', deleteLi);
 main.addEventListener('click', mainHandler);
 plusButton.addEventListener('click', newLi);
-makeTaskButton.addEventListener('click', taskButtonHandler)
+makeTaskButton.addEventListener('click', taskButtonHandler);
 clearButton.addEventListener('click', clearAll);
+searchBar.addEventListener('keyup', search);
 
 // Handler Functions
 function mainHandler() {
@@ -68,19 +70,25 @@ function newLi() {
 
 function deleteLi(event) {
   if(event.target.closest('.aside__ul-img')) {
+    var newIndexli = newIndex();
     event.target.closest('.aside__li').remove();
-    liIndex();
+    taskArray.splice(newIndexli, 1);
     classArrayIndex(taskArray);
     emptyInput(taskItem);
   }
 }
 
-function liIndex() {
+function newId() {
   if(event.target.closest('.aside__ul-img')) {
-    for(var i = 0; i < taskArray.length; i++) {
-      if(taskArray[i].id === event.target.parentElement.dataset.id) {
-        taskArray.splice(i, 1);
-      }
+       return parseInt(event.target.parentElement.dataset.id)
+  }
+}
+
+function newIndex() {
+  var newIdli = newId();
+  for(var i = 0; i < taskArray.length; i++) {
+  if(newIdli === taskArray[i].id) {
+    return i;
     }
   }
 }
@@ -103,7 +111,8 @@ function newTask(card, toDo) {
       <p class="card__delete-text">DELETE</p>
     </div>
   </footer>
-</article>`)
+</article>`);
+persistUrgency();
 }
 
 function addListItems(taskArray, card) {
@@ -282,18 +291,18 @@ function classArrayIndex(storageArr) {
 }
 
 function deleteCard(event) {
+  // debugger;
   var card = event.target.closest('.card');
   var cardDelete = event.target.closest('.card__delete');
   var cardIndex = findIndex(event);
 
-  for(var i = 0; i < listArray[cardIndex].tasks.length; i++) {
+  for(var i = 0; i < listArray.length; i++) {
     if(cardDelete && listArray[cardIndex].tasks[listArray[cardIndex].tasks.length - 1].completed === true && listArray[cardIndex].tasks[0].completed === true) {
       card.remove();
       listArray[cardIndex].deleteFromStorage(cardIndex);
+      console.log('list', listArray.length);
+      console.log('localStorage', localStorage.length);
       promptList();
-    } else {
-      promptList();
-      return;
     }
   }
 }
@@ -305,3 +314,31 @@ function promptList() {
     prompt.style.display = 'visible';
   }
 }
+
+function search() {
+  var lowerCaseSearch = searchBar.value.toLowerCase();
+  var results = listArray.filter(result => result.title.toLowerCase().includes(lowerCaseSearch));
+
+    main.innerHTML = '';
+    results.map(result => newTask(result, result.tasks));
+}
+
+// function searchFilter() {
+//   var search = searchBox.value.toLowerCase();
+//   var results = ideaArray.filter(function(cardObj) {
+//     return (
+//       (cardObj.title.toLowerCase().includes(search) ||
+//         cardObj.body.toLowerCase().includes(search)) &&
+//       (qualitySearch === 0 || cardObj.quality === qualitySearch) &&
+//       (cardObj.star === starSearch || starSearch === 0)
+//     );
+//   });
+//   if (results.length === ideaArray.length) {
+//     persist();
+//   } else {
+//     main.innerHTML = '';
+//     results.map(function(cardObj) {
+//       appendCard(cardObj);
+//     });
+//   }
+// }
