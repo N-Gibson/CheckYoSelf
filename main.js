@@ -14,7 +14,7 @@ var prompt = document.querySelector('.prompt-message');
 // Functions On Page Load
 reinstantiateTasks();
 persistToDos();
-// prompt();
+promptList();
 // Event Listeners
 aside.addEventListener('click', deleteLi);
 main.addEventListener('click', mainHandler);
@@ -25,8 +25,8 @@ clearButton.addEventListener('click', clearAll);
 // Handler Functions
 function mainHandler() {
   urgent(event);
-  deleteCard(event);
   checkTask(event);
+  deleteCard(event);
   // findIndex(event)
 }
 
@@ -34,12 +34,12 @@ function taskButtonHandler() {
   if(taskTitle.value === '' || ul.hasChildNodes() === false) {
     return;
   } else {
-  // debugger;
   // create the li's (which happens on click of +)
   // make the new card instantiation
   instantiateCard();
   emptyInput(taskTitle);
   emptyUl();
+  promptList();
   // Push the list items into the class array
   // Save to storage 
   // Append the card to the dom
@@ -61,7 +61,7 @@ function newLi() {
     return;
   } else {
   var li = new TaskItem(Date.now(), taskItem.value, false);
-  ul.insertAdjacentHTML('beforeend', ` <li data-id=${li.id} class="aside__li">
+  ul.insertAdjacentHTML('beforeend', `<li data-id=${li.id} data-completed=${li.completed} class="aside__li">
   <img class="aside__ul-img" src="images/delete.svg">
   <p class="aside__ul-p">${taskItem.value}</p> 
 </li>`)
@@ -71,19 +71,34 @@ function newLi() {
 }
 
 function deleteLi(event) {
+
   if(event.target.closest('.aside__ul-img')) {
     event.target.closest('.aside__li').remove();
+    liIndex();
+    classArrayIndex(taskArray);
     emptyInput(taskItem);
   }
 }
 
-function newTask(card, arg) {
+function liIndex() {
+  // debugger;
+  if(event.target.closest('.aside__ul-img')) {
+    for(var i = 0; i < taskArray.length; i++) {
+      if(taskArray[i].id === event.target.parentElement.dataset.id) {
+        taskArray.splice(i, 1);
+      }
+      console.log(event.target.parentElement.id);
+    }
+  }
+}
+
+function newTask(card, toDo) {
   var urgent = card.urgent ? 'images/urgent-active.svg' : 'images/urgent.svg';
 
-  main.insertAdjacentHTML('afterbegin', `<article class="card" data-id=${card.id}>
+  main.insertAdjacentHTML('afterbegin', `<article class="card" data-id=${card.id} data-urgent=${card.urgent}>
   <header class="card__header">${card.title}</header>
     <ul class="card__div-appended">
-      ${addListItems(arg, card)}
+      ${addListItems(toDo, card)}
     </ul>
   <footer class="card__footer">
     <div class="footer__urgent-div">
@@ -100,15 +115,14 @@ function newTask(card, arg) {
 
 function addListItems(taskArray, card) {
   var ul = '';
-  var checked = card.tasks.completed ? 'images/checkbox-active.svg' : 'images/checkbox.svg'
-
+  
   for (var i = 0; i < taskArray.length; i++) {
-    // var completedStatus = listedTasks.tasks[i].completed ? 'checkbox-active.svg' : 'checkbox.svg';
-    // var completedParagraphStyle = listedTasks.tasks[i].completed ? 'main__article__task-completed' : 'main__article__task-not-completed';
-      ul +=
-    `<li class="card-li" data-id=${taskArray[i].id}>
-      <img class="card__checkbox-inactive" src=${checked}/>
-      <p>${taskArray[i].task}</p>
+    var checked = card.tasks[i].completed ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
+    var classToItalicize = card.tasks[i].completed ? 'italicized-text' : 'nothing';
+    ul +=
+    `<li class="card-li" data-id=${taskArray[i].id} data-completed=${taskArray[i].completed}>
+      <img class="card__checkbox-inactive" src=${checked}>
+      <p class=${classToItalicize}>${taskArray[i].task}</p>
     </li>`
     }
    return ul;
@@ -133,38 +147,7 @@ function reinstantiateTasks() {
   listArray = newArray; 
 }
 
-// function reinstantiateList() {
-//   var holder = []
-//   if(localStorage.length === 0) {
-//     return;
-//   } else {
-//   for(var i = 0; i < listArray.length; i++) {
-//     var oldTasks = new TaskItem(listArray[i].id, listArray[i].task, listArray[i].completed);
-//     holder.push(oldTasks)
-//   }
-//   taskArray = holder;
-//   console.log(taskArray);
-//   reinstantiateCard();
-//   }
-// }
-
-// function reinstantiateCard() {
-//   if(localStorage.length === 0) {
-//     return;
-//   } else {
-//     for(var i = 0; i < listArray.length; i++) {
-//       var newCard = new ToDo(listArray[i].id, listArray[i].title, listArray[i].urgent, taskArray);
-//       listArray.push(newCard);
-//       }
-//     }
-
-//   // persistToDos();
-//   newCard.saveToStorage(listArray);
-//   newTask(newCard);
-//   taskArray = [];
-// }
 function checkTask(event) {
-  // debugger;
   var checkBox = event.target.closest('.card__checkbox-inactive');
   var cardIndex = findIndex(event);
   if(checkBox) {
@@ -173,24 +156,24 @@ function checkTask(event) {
   var index = parseInt(taskIndex);
   var notChecked = 'images/checkbox.svg';
   var checked = 'images/checkbox-active.svg';
+  var p = event.target.nextElementSibling;
   if(checkBox && listArray[cardIndex].tasks[index].completed === false) {
     checkBox.src = checked;
     listArray[cardIndex].tasks[index].completed = true;
-    // run function to change styles
     listArray[cardIndex].updateToDo(listArray);
-    console.log('complete true', listArray[cardIndex].tasks[index]);
+    p.classList.add('italicized-text');
   } else if(checkBox && listArray[cardIndex].tasks[index].completed === true) {
     checkBox.src = notChecked;
     listArray[cardIndex].tasks[index].completed = false;
-    // run function to change styles
     listArray[cardIndex].updateToDo(listArray);
-    console.log('complete false', listArray[cardIndex].tasks[index]);
+    p.classList.remove('italicized-text');
   } else {
     return;
   }
 }
 
 function urgent(event) {
+  // debugger;
   var urgentButton = event.target.closest('.card__urgent');
   var cardIndex = findIndex(event)
   var notUrgent = 'images/urgent.svg';
@@ -199,33 +182,36 @@ function urgent(event) {
   if(urgentButton && listArray[cardIndex].urgent === false) {
     urgentButton.src = urgent;
     listArray[cardIndex].urgent = true;
-    toggleUrgency(cardIndex);
     listArray[cardIndex].updateToDo(listArray);
-  } else if(urgentButton && listArray[index].urgent === true) {
+    toggleUrgency(cardIndex, event);
+  } else if(urgentButton && listArray[cardIndex].urgent === true) {
     urgentButton.src = notUrgent;
-    listArray[index].urgent = false;
-    toggleUrgency(index);
-    listArray[index].updateToDo(listArray);
+    listArray[cardIndex].urgent = false;
+    toggleUrgency(cardIndex, event);
+    listArray[cardIndex].updateToDo(listArray);
   } else {
     return;
   }
 }
 
-function toggleUrgency(index) {
-  var card = document.querySelector('article');
-  var cardHeader = document.querySelector('.card__header');
-  var cardFooter = document.querySelector('.card__footer');
-  var cardUrgentText = document.querySelector('.card__urgent-text');
-  if(listArray[index].urgent === true) {
+function toggleUrgency(cardIndex, event) {
+  var card = event.target.closest('.card');
+  // console.log(event);
+  var cardHeader = event.target.parentElement.parentElement.previousElementSibling.previousElementSibling;
+  var cardFooter = event.target.parentElement.parentElement;
+  var cardUrgentText = event.target.nextElementSibling;
+  if(listArray[cardIndex].urgent === true) {
     card.classList.add('article__card-urgent');
     cardHeader.classList.add('card__header-urgent');
     cardFooter.classList.add('card__footer-urgent');
     cardUrgentText.classList.add('card__urgent-text-urgent');
+    listArray[cardIndex].updateToDo(listArray);
   } else {
     card.classList.remove('article__card-urgent');
     cardHeader.classList.remove('card__header-urgent');
     cardFooter.classList.remove('card__footer-urgent');
     cardUrgentText.classList.remove('card__urgent-text-urgent');
+    listArray[cardIndex].updateToDo(listArray);
   }
 }
 
@@ -241,9 +227,46 @@ function persistToDos() {
   for(var i = 0; i < listArray.length; i++) {
     newTask(listArray[i], listArray[i].tasks);
   }
+  persistUrgency();
+  // persistCheck();
 }
 
-// Can be replaced!!!!!!!!!!!!!!!!
+function persistUrgency() {
+  var card = document.querySelectorAll('.card');
+  for(var i = 0; i < card.length; i++) {
+    if(card[i].dataset.urgent === 'true') {
+      card[i].classList.add('article__card-urgent');
+      card[i].firstElementChild.classList.add('card__header-urgent');
+      card[i].lastElementChild.classList.add('card__footer-urgent');
+      card[i].lastElementChild.firstElementChild.lastElementChild.classList.add('card__urgent-text-urgent');
+    } 
+  }
+}
+
+// function persistCheck() {
+//   var checkBox = 
+//   var notChecked = 'images/checkbox.svg';
+//   var checked = 'images/checkbox-active.svg';
+//   // debugger;
+//   // var card = document.querySelectorAll('.card');
+//   // for(var i = 0; i < card.length; i++) {
+//   //   if(card[i].attributes[2].nodeValue === 'true') {
+//   //     card[i].firstElementChild.nextElementSibling.children.classList.add('.italicized-text');
+
+//   //   } else if(listArray[i].tasks.forEach(task => task.complete === false)) {
+//   //     checkBox.src = notChecked;
+//   //   }
+//   // }
+//   var li = document.querySelectorAll('.card__li')
+//   for(var i = 0; i < li.length; i++) {
+//     if(li[i].dataset.completed === 'true') {
+
+//     }
+//   }
+// }
+
+
+
 function findId(event) {
   var target = event.target.closest('.card');
   if(listArray.length > 0 && target) {
@@ -259,7 +282,7 @@ function findIndex(event) {
     }
   }
 }
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 function classArrayId(index) {
   var target = event.target.closest('.card__checkbox-inactive');
   var storage = [];
@@ -273,14 +296,6 @@ function classArrayId(index) {
     classArrayIndex(storage)
     // return parseInt(target.dataset.id);
 }
-
-// function classArrayIndex(passedId, passedIndex) {
-//   for(var i = 0; i < listArray[passedIndex].tasks.length; i++) {
-//     if(passedId === listArray[passedIndex].tasks[i].id) {
-//       return console.log(i)
-//     }
-//   }
-// }
 
 function classArrayIndex(storageArr) {
   var li = event.target.closest('li');
@@ -297,15 +312,22 @@ function deleteCard(event) {
   var card = event.target.closest('.card');
   var cardDelete = event.target.closest('.card__delete');
   var cardIndex = findIndex(event);
-  for(var i = 0; i < listArray.length; i++) {
-    console.log(listArray[cardIndex].tasks[i].completed);
+  for(var i = 0; i < listArray[cardIndex].tasks.length; i++) {
+    if(cardDelete && listArray[cardIndex].tasks[listArray[cardIndex].tasks.length - 1].completed === true && listArray[cardIndex].tasks[0].completed === true) {
+      card.remove();
+      listArray[cardIndex].deleteFromStorage(cardIndex);
+      promptList();
+    } else {
+      promptList();
+      return;
+    }
   }
 }
 
-function prompt() {
-  if(listArray.length < 1) {
-    main.insertAdjacentHTML('afterbegin', `<p class='prompt-message'>Add a TO <span class='prompt-span'>DO'</span> LIST</p>`)
-  } else if(listArray.length >= 1) {
-    prompt.remove();
+function promptList() {
+  if(listArray.length !== 0) {
+    prompt.style.display = 'none';
+  } else {
+    prompt.style.display = 'visible';
   }
 }

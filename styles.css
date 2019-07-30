@@ -269,6 +269,13 @@ img {
   margin: 5px;
 }
 
+/* Checked items */
+
+.italicized-text{
+  color: #75929F;
+  font-style: italic;
+}
+
 /* Prompt Message */
 
 .prompt-message {
@@ -283,4 +290,8 @@ img {
   padding: 74px;
   text-align: center;
   width: 750px;
+}
+
+.hidden {
+  visibility: hidden;
 }
