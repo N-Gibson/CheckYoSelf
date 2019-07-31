@@ -12,7 +12,8 @@
 - This project went relatively smoothly. There were four phases of functionality and I was successfully able to complete all pieces of phase three. Iterating through various arrays within objects created from a class. Adding and removing these elements dynamically was a challenge but I was able to overcome them with time and digging through objects (especially the event object). All in all this project went well and I'm pretty happy with the final product. 
 
 ## Screenshots 
-
+  Here is the link to the live site:  https://n-gibson.github.io/CheckYoSelf/
+  
 ### Provided Comp
 
 <img width="532" alt="Screen Shot 2019-07-30 at 8 05 40 PM" src="https://user-images.githubusercontent.com/49107377/62178253-a078f200-b305-11e9-91db-2a153629254b.png">
