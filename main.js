@@ -48,11 +48,13 @@ function taskButtonHandler() {
 }
 
 function clearAll() {
+  var index = newIndex();
   if(taskTitle.value === '' && ul.hasChildNodes() === false) {
     return;
   } else {
     emptyInput(taskTitle);
     emptyUl();
+    taskArray.splice(index, taskArray.length);
   }
 }
 
