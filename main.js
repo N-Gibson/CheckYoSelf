@@ -40,10 +40,10 @@ function taskButtonHandler() {
   if(taskTitle.value === '' || ul.hasChildNodes() === false) {
     return;
   } else {
-  instantiateCard();
-  emptyInput(taskTitle);
-  emptyUl();
-  promptList();
+    instantiateCard();
+    emptyInput(taskTitle);
+    emptyUl();
+    promptList();
   }
 }
 
@@ -91,7 +91,7 @@ function deleteLi(event) {
 
 function newId() {
   if(event.target.closest('.aside__ul-img')) {
-       return parseInt(event.target.parentElement.dataset.id)
+    return parseInt(event.target.parentElement.dataset.id)
   }
 }
 
@@ -137,10 +137,10 @@ function addListItems(taskArray, card) {
       <img class="card__checkbox-inactive" src=${checked}>
       <p class=${classToItalicize}>${taskArray[i].task}</p>
     </li>`
-    }
+  }
    return ul;
-  };
-// }
+};
+
 
 function instantiateCard() {
   var toDo = new ToDo(Date.now(), taskTitle.value, false, taskArray)
@@ -164,11 +164,9 @@ function reinstantiateTasks() {
 function checkTask(event) {
   var checkBox = event.target.closest('.card__checkbox-inactive');
   var cardIndex = findIndex(event);
-
   if(checkBox) {
     classArrayId(cardIndex);
   }
-
   var index = parseInt(taskIndex);
   var notChecked = 'images/checkbox.svg';
   var checked = 'images/checkbox-active.svg';
@@ -197,12 +195,10 @@ function urgent(event) {
 
   if(urgentButton && listArray[cardIndex].urgent === false) {
     urgentButton.src = urgent;
-    // listArray[cardIndex].urgent = true;
     listArray[cardIndex].updateToDo(listArray);
     toggleUrgency(cardIndex, event);
   } else if(urgentButton && listArray[cardIndex].urgent === true) {
     urgentButton.src = notUrgent;
-    // listArray[cardIndex].urgent = false;
     listArray[cardIndex].updateToDo(listArray);
     toggleUrgency(cardIndex, event);
   } else {
@@ -221,13 +217,11 @@ function toggleUrgency(cardIndex, event) {
     cardHeader.classList.add('card__header-urgent');
     cardFooter.classList.add('card__footer-urgent');
     cardUrgentText.classList.add('card__urgent-text-urgent');
-    // listArray[cardIndex].updateToDo(listArray);
   } else {
     card.classList.remove('article__card-urgent');
     cardHeader.classList.remove('card__header-urgent');
     cardFooter.classList.remove('card__footer-urgent');
     cardUrgentText.classList.remove('card__urgent-text-urgent');
-    // listArray[cardIndex].updateToDo(listArray);
   }
 }
 
