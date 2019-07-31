@@ -313,13 +313,14 @@ function deleteCard(event) {
     listArray[cardIndex].deleteFromStorage(cardIndex);
     }
   }
+  promptList();
 }
 
 function promptList() {
   if(listArray.length > 0) {
     prompt.style.display = 'none';
   } else {
-    prompt.style.display = 'visible';
+    prompt.style.display = 'block';
   }
 }
 
@@ -359,6 +360,6 @@ function filterOff() {
 
 function urgentMessage() {
   if(main.innerHTML === '') {
-    main.insertAdjacentHTML('afterbegin', `<p class=urgent-prompt>Gotta have <span>yo'</span> self some urgency!</p>`)
+    main.insertAdjacentHTML('afterbegin', `<p class=urgent-prompt>Gotta have <span>YO'</span> self some urgency!</p>`)
   }
 }

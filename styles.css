@@ -161,7 +161,7 @@ main {
   display: grid;
   grid-area: main;
   grid-gap: 20px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, .1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   min-height: 100vh;
   padding: 40px;
 }
@@ -299,10 +299,13 @@ img {
   font-weight: 700;
   height: 200px;
   margin: 60px;
-  position: relative;
   padding: 74px;
   text-align: center;
-  width: 750px;
+  width: 200%;
+}
+
+.prompt-li {
+  font-size: .5em;
 }
 
 /* Media Queries */
@@ -341,6 +344,12 @@ img {
   main {
     padding: 50px;
   }
+
+  .prompt-message {
+    margin: 40px;
+    width: 100%;
+    height: 400px;
+  }
 }
 
 @media screen and (max-width: 375px) {
@@ -354,5 +363,9 @@ img {
 
   main {
     padding: 30px;
+  }
+
+  .prompt-message {
+    margin: 0px;
   }
 }
